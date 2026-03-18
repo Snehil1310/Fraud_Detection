@@ -1,0 +1,91 @@
+# ========================
+# Application Configuration
+# ========================
+
+spring:
+  application:
+    name: fraud-detection-system
+
+  # ---- MySQL DataSource ----
+  datasource:
+    url: jdbc:mysql://localhost:3306/fraud_detection_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 20000
+
+  # ---- JPA / Hibernate ----
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  # ---- Spring Batch ----
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false  # Prevent auto-run; trigger via REST endpoint
+
+  # ---- Servlet ----
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+# ========================
+# Server Configuration
+# ========================
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# ========================
+# SpringDoc / Swagger
+# ========================
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+
+# ========================
+# Actuator
+# ========================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# ========================
+# Application Custom Config
+# ========================
+fraud:
+  detection:
+    model-path: classpath:models/random-forest.model
+    default-strategy: RANDOM_FOREST
+    batch:
+      chunk-size: 1000
+      csv-path: classpath:data/creditcard.csv
+    rate-limit:
+      requests-per-minute: 20

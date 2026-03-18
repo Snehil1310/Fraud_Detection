@@ -1,0 +1,43 @@
+# ========================
+# Test Profile Configuration
+# ========================
+
+spring:
+  application:
+    name: fraud-detection-system-test
+
+  # ---- H2 In-Memory DataSource for Testing ----
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  # ---- JPA / Hibernate ----
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # ---- Spring Batch ----
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+server:
+  port: 0
+
+fraud:
+  detection:
+    model-path: classpath:models/random-forest.model
+    default-strategy: RULE_BASED
+    batch:
+      chunk-size: 100
+      csv-path: classpath:data/test-creditcard.csv
+    rate-limit:
+      requests-per-minute: 100
